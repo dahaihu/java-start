@@ -1,22 +1,14 @@
 package common;
 
-public class Node<K, V> {
-    private K key;
-    private V value;
-    private List<K, V> list;
-    private Node<K, V> next, prev;
+public class Node<K, V> implements NodeInterface {
+    protected K key;
+    protected V value;
+    protected List<K, V> list;
+    protected NodeInterface next, prev;
 
     public Node(K key, V value) {
         this.key = key;
         this.value = value;
-    }
-
-    public void setNext(Node<K, V> next) {
-        this.next = next;
-    }
-
-    public void setPrev(Node<K, V> prev) {
-        this.prev = prev;
     }
 
     public K getKey() {
@@ -31,12 +23,31 @@ public class Node<K, V> {
         this.value = value;
     }
 
-    public Node<K, V> getPrev() {
-        return prev;
+    @Override
+    public void setPrev(NodeInterface prev) {
+        this.prev = prev;
     }
 
-    public Node<K, V> getNext() {
-        return next;
+    @Override
+    public NodeInterface getPrev() {
+        return this.prev;
+    }
+
+
+    @Override
+    public void setNext(NodeInterface next) {
+        this.next = next;
+    }
+
+    @Override
+    public NodeInterface getNext() {
+        return null;
+    }
+
+
+    @Override
+    public NodeInterface newInstance() {
+        return new Node<K, V>(null, null);
     }
 
     public void reset() {

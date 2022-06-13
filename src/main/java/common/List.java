@@ -1,8 +1,8 @@
 package common;
 
 
-public class List<K, V> {
-    private Node<K, V> dummy;
+public class List {
+    protected NodeInterface dummy;
 
     public List() {
         this.dummy = new Node<>(null, null);
@@ -10,10 +10,10 @@ public class List<K, V> {
         this.dummy.setNext(this.dummy);
     }
 
-    public void pushBack(Node<K, V> node) {
+    public void pushBack(NodeInterface node) {
         node.setList(this);
 
-        Node<K, V> oldTail = this.dummy.getPrev();
+        NodeInterface oldTail = this.dummy.getPrev();
         oldTail.setNext(node);
         node.setPrev(oldTail);
 
@@ -21,10 +21,10 @@ public class List<K, V> {
         dummy.setPrev(node);
     }
 
-    public void pushHead(Node<K, V> node) {
+    public void pushHead(NodeInterface node) {
         node.setList(this);
 
-        Node<K, V> oldHead = this.dummy.getNext();
+        NodeInterface oldHead = this.dummy.getNext();
         node.setNext(oldHead);
         oldHead.setPrev(node);
 
@@ -32,38 +32,38 @@ public class List<K, V> {
         node.setPrev(dummy);
     }
 
-    public Node<K, V> head() {
+    public NodeInterface head() {
         if (this.empty()) {
             return null;
         }
         return dummy.getNext();
     }
 
-    public Node<K, V> tail() {
+    public NodeInterface tail() {
         if (this.empty()) {
             return null;
         }
         return dummy.getPrev();
     }
 
-    public Node<K, V> removeBack() {
+    public NodeInterface removeBack() {
         if (this.empty()) {
             return null;
         }
-        Node<K, V> last = this.dummy.getPrev();
-        Node<K, V> prev = last.getPrev();
+        NodeInterface last = this.dummy.getPrev();
+        NodeInterface prev = last.getPrev();
         prev.setNext(dummy);
         dummy.setPrev(prev);
         last.reset();
         return last;
     }
 
-    public void remove(Node<K, V> node) {
+    public void remove(NodeInterface node) {
         if (node.getList() != this) {
             return;
         }
-        Node<K, V> prev = node.getPrev();
-        Node<K, V> next = node.getNext();
+        NodeInterface prev = node.getPrev();
+        NodeInterface next = node.getNext();
         prev.setNext(next);
         next.setPrev(prev);
     }
