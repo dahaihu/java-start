@@ -1,66 +1,44 @@
 package common;
 
-public class Node<K, V> implements NodeInterface {
-    protected K key;
-    protected V value;
-    protected List<K, V> list;
-    protected NodeInterface next, prev;
+public class Node<E> {
+    List<E> list;
+    Node<E> prev, next;
+    E value;
 
-    public Node(K key, V value) {
-        this.key = key;
+    public Node(E value) {
         this.value = value;
     }
 
-    public K getKey() {
-        return key;
-    }
-
-    public V getValue() {
-        return value;
-    }
-
-    public void setValue(V value) {
-        this.value = value;
-    }
-
-    @Override
-    public void setPrev(NodeInterface prev) {
+    public void setPrev(Node<E> prev) {
         this.prev = prev;
     }
 
-    @Override
-    public NodeInterface getPrev() {
+    public Node<E> getPrev() {
         return this.prev;
     }
 
-
-    @Override
-    public void setNext(NodeInterface next) {
+    public void setNext(Node<E> next) {
         this.next = next;
     }
 
-    @Override
-    public NodeInterface getNext() {
-        return null;
+    public Node<E> getNext() {
+        return this.next;
     }
 
+    public E getValue() {
+        return value;
+    }
 
-    @Override
-    public NodeInterface newInstance() {
-        return new Node<K, V>(null, null);
+    public void setList(List<E> list) {
+        this.list = list;
+    }
+    public List<E> getList() {
+        return this.list;
     }
 
     public void reset() {
-        prev = null;
-        next = null;
-        list = null;
-    }
-
-    public void setList(List<K, V> list) {
-        this.list = list;
-    }
-
-    public List<K, V> getList() {
-        return list;
+        this.list = null;
+        this.prev = null;
+        this.next = null;
     }
 }

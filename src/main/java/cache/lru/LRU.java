@@ -1,67 +1,78 @@
 package cache.lru;
 
 import common.List;
-import common.Node;
 
 import java.util.HashMap;
+import java.util.Iterator;
 
 public class LRU<K, V> {
-    private HashMap<K, Node<K, V>> map;
-    private List<K, V> list;
-    private int length;
+    private final HashMap<K, common.Node<Node<K, V>>> map;
+    private final List<Node<K, V>> list;
+    private final int capacity;
 
 
     public LRU(int length) {
-        this.length = length;
-        this.list = new List<K, V>();
-        this.map = new HashMap<K, Node<K, V>>();
+        this.capacity = length;
+        this.list = new List<>();
+        this.map = new HashMap<>();
     }
 
-    private void updatePosition(Node<K, V> node) {
+    private void updatePosition(common.Node<Node<K, V>> node) {
         list.remove(node);
-        list.pushHead(node);
+        list.addFirst(node);
     }
 
     private void push(Node<K, V> node) {
-        map.put(node.getKey(), node);
-        list.pushHead(node);
+        common.Node<Node<K, V>> wrapped = new common.Node<>(node);
+        list.addFirst(wrapped);
+        map.put(node.getKey(), wrapped);
     }
 
     private void evict() {
-        Node<K, V> removed = list.removeBack();
-        map.remove(removed.getKey());
+        common.Node<Node<K, V>> node = list.getTail();
+        boolean removed = list.remove(node);
+        if (!removed) {
+            System.out.println("no evict????");
+        } else {
+            map.remove(node.getValue().getKey());
+        }
     }
 
     public void put(K k, V v) {
-        Node<K, V> node = map.get(k);
+        common.Node<Node<K, V>> node = map.get(k);
         if (node != null) {
             this.updatePosition(node);
-            node.setValue(v);
+            node.getValue().setValue(v);
             return;
         }
-        if (this.length == this.map.size()) {
+        if (this.capacity == this.map.size()) {
             this.evict();
         }
-        Node<K, V> newNode = new Node<K, V>(k, v);
+        Node<K, V> newNode = new Node<>(k, v);
         this.push(newNode);
     }
 
     public V get(K k) {
-        Node<K, V> node = map.get(k);
+        common.Node<Node<K, V>> node = map.get(k);
         if (node != null) {
             this.updatePosition(node);
-            return node.getValue();
+            return node.getValue().getValue();
         }
         return null;
     }
 
+    public int size() {
+        return this.map.size();
+    }
+
     public void print() {
-        for (Node<K, V> node = this.list.head(); node != this.list.tail(); node = node.getNext()) {
-            System.out.printf("%s (%s) -> ", node.getKey(), node.getValue());
-        }
-        Node<K, V> node = this.list.tail();
-        if (node != null) {
-            System.out.printf("%s(%s)", node.getKey(), node.getValue());
+        for (Iterator<Node<K, V>> it = this.list.iterator(); it.hasNext(); ) {
+            Node<K, V> node = it.next();
+            if (it.hasNext()) {
+                System.out.printf("%s(%s) -> ", node.getKey(), node.getValue());
+            } else {
+                System.out.printf("%s(%s)", node.getKey(), node.getValue());
+            }
         }
         System.out.println();
     }

@@ -1,17 +1,20 @@
 package cache.lfu;
 
-public class Node<K, V> extends common.Node<K, V> {
-    private common.Node<K, common.List<Integer, Node<K, V>>> freqNode;
+import common.List;
 
-    public Node(K key, V value) {
+public class Node<K, V> extends cache.lru.Node<K, V> {
+    private cache.lru.Node<Integer, List<cache.lfu.Node<K, V>>> frequencyNode;
+
+    public Node(K key, V value, cache.lru.Node<Integer, List<cache.lfu.Node<K, V>>> frequencyNode) {
         super(key, value);
+        this.frequencyNode = frequencyNode;
     }
 
-    public void setFreqNode(common.Node<K, common.List<Integer, Node<K, V>>> freqNode) {
-        this.freqNode = freqNode;
+    public List<cache.lfu.Node<K, V>> getNodeList() {
+        return this.frequencyNode.getValue();
     }
 
-    public common.List<Integer, Node<K, V>> getNodeList() {
-        return this.freqNode.getValue();
+    public Integer getFrequency() {
+        return this.frequencyNode.getKey();
     }
 }
