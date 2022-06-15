@@ -1,4 +1,4 @@
-package cache.lru;
+package cache;
 
 public class Node<K, V> {
     private final K key;

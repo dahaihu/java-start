@@ -5,9 +5,9 @@ import java.util.function.Consumer;
 
 public class List<E> {
     private class iterator<E> implements Iterator<E> {
-        Node<E> cur;
+        NodeWrapper<E> cur;
 
-        public iterator(Node<E> start) {
+        public iterator(NodeWrapper<E> start) {
             cur = start;
         }
 
@@ -18,7 +18,7 @@ public class List<E> {
 
         @Override
         public E next() {
-            Node<E> node = cur;
+            NodeWrapper<E> node = cur;
             cur = cur.getNext();
             return node.getValue();
         }
@@ -38,44 +38,57 @@ public class List<E> {
         return new iterator<>(head);
     }
 
-    private Node<E> head, tail;
+    private NodeWrapper<E> head, tail;
 
-    public Node<E> getHead() {
+    public NodeWrapper<E> getHead() {
         return this.head;
     }
 
-    public Node<E> getTail() {
+    public NodeWrapper<E> getTail() {
         return this.tail;
     }
 
 
-    public void addFirst(Node<E> node) {
+    public void addFirst(NodeWrapper<E> node) {
         node.setList(this);
         if (this.head == null) {
             this.head = node;
             this.tail = node;
             return;
         }
-        Node<E> oldHead = head;
+        NodeWrapper<E> oldHead = head;
         this.head = node;
         this.head.setNext(oldHead);
         oldHead.setPrev(this.head);
     }
 
-    public void addTail(Node<E> node) {
+    public boolean insertAfter(NodeWrapper<E> node, NodeWrapper<E> pre) {
+        if (pre.getList() != this) {
+            return false;
+        }
+        node.setList(this);
+        pre.setNext(node);
+        node.setPrev(pre);
+        if (pre == tail) {
+            tail = node;
+        }
+        return true;
+    }
+
+    public void addTail(NodeWrapper<E> node) {
         node.setList(this);
         if (this.head == null) {
             this.head = node;
             this.tail = node;
             return;
         }
-        Node<E> oldTail = tail;
+        NodeWrapper<E> oldTail = tail;
         this.tail = node;
         oldTail.setNext(this.tail);
         this.tail.setPrev(oldTail);
     }
 
-    public boolean remove(Node<E> node) {
+    public boolean remove(NodeWrapper<E> node) {
         if (this != node.getList()) {
             return false;
         }
@@ -89,12 +102,16 @@ public class List<E> {
             this.tail = node.getPrev();
             this.tail.setNext(null);
         } else {
-            Node<E> prev = node.getPrev();
-            Node<E> next = node.getNext();
+            NodeWrapper<E> prev = node.getPrev();
+            NodeWrapper<E> next = node.getNext();
             prev.setNext(next);
             next.setPrev(prev);
         }
         node.reset();
         return true;
+    }
+
+    public boolean empty() {
+        return this.head == null;
     }
 }

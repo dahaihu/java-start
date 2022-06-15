@@ -1,12 +1,14 @@
 package cache.lru;
 
+import cache.Node;
 import common.List;
+import common.NodeWrapper;
 
 import java.util.HashMap;
 import java.util.Iterator;
 
 public class LRU<K, V> {
-    private final HashMap<K, common.Node<Node<K, V>>> map;
+    private final HashMap<K, NodeWrapper<Node<K, V>>> map;
     private final List<Node<K, V>> list;
     private final int capacity;
 
@@ -17,19 +19,19 @@ public class LRU<K, V> {
         this.map = new HashMap<>();
     }
 
-    private void updatePosition(common.Node<Node<K, V>> node) {
+    private void updatePosition(NodeWrapper<Node<K, V>> node) {
         list.remove(node);
         list.addFirst(node);
     }
 
     private void push(Node<K, V> node) {
-        common.Node<Node<K, V>> wrapped = new common.Node<>(node);
+        NodeWrapper<Node<K, V>> wrapped = new NodeWrapper<>(node);
         list.addFirst(wrapped);
         map.put(node.getKey(), wrapped);
     }
 
     private void evict() {
-        common.Node<Node<K, V>> node = list.getTail();
+        NodeWrapper<Node<K, V>> node = list.getTail();
         boolean removed = list.remove(node);
         if (!removed) {
             System.out.println("no evict????");
@@ -39,7 +41,7 @@ public class LRU<K, V> {
     }
 
     public void put(K k, V v) {
-        common.Node<Node<K, V>> node = map.get(k);
+        NodeWrapper<Node<K, V>> node = map.get(k);
         if (node != null) {
             this.updatePosition(node);
             node.getValue().setValue(v);
@@ -53,7 +55,7 @@ public class LRU<K, V> {
     }
 
     public V get(K k) {
-        common.Node<Node<K, V>> node = map.get(k);
+        NodeWrapper<Node<K, V>> node = map.get(k);
         if (node != null) {
             this.updatePosition(node);
             return node.getValue().getValue();

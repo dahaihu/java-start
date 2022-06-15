@@ -1,27 +1,27 @@
 package common;
 
-public class Node<E> {
+public class NodeWrapper<E> {
     List<E> list;
-    Node<E> prev, next;
+    NodeWrapper<E> prev, next;
     E value;
 
-    public Node(E value) {
+    public NodeWrapper(E value) {
         this.value = value;
     }
 
-    public void setPrev(Node<E> prev) {
+    public void setPrev(NodeWrapper<E> prev) {
         this.prev = prev;
     }
 
-    public Node<E> getPrev() {
+    public NodeWrapper<E> getPrev() {
         return this.prev;
     }
 
-    public void setNext(Node<E> next) {
+    public void setNext(NodeWrapper<E> next) {
         this.next = next;
     }
 
-    public Node<E> getNext() {
+    public NodeWrapper<E> getNext() {
         return this.next;
     }
 
