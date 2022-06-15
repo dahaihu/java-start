@@ -32,7 +32,7 @@ public class LFU<K, V> {
         if (nextFreqNode == null) {
             nextNodeList = new List<>();
             nextFreqNode = new common.NodeWrapper<>(new Node<>(frequency + 1, nextNodeList));
-            frequencyMap.put(frequency+1, nextFreqNode);
+            frequencyMap.put(frequency + 1, nextFreqNode);
         } else {
             nextNodeList = nextFreqNode.getValue().getValue();
         }
@@ -57,6 +57,19 @@ public class LFU<K, V> {
         return null;
     }
 
+    public void evict() {
+        NodeWrapper<Node<Integer, List<LFUNode<K, V>>>> head = frequencyList.getHead();
+        List<LFUNode<K, V>> list = head.getValue().getValue();
+        NodeWrapper<LFUNode<K, V>> remove = list.getTail();
+        list.remove(remove);
+        valuesMap.remove(remove.getValue().getKey());
+        if (list.empty()) {
+            Integer removedFreq = head.getValue().getKey();
+            frequencyList.remove(frequencyMap.get(removedFreq));
+            frequencyMap.remove(removedFreq);
+        }
+    }
+
     public void put(K key, V value) {
         NodeWrapper<LFUNode<K, V>> wrap = valuesMap.get(key);
         if (wrap != null) {
@@ -65,17 +78,7 @@ public class LFU<K, V> {
             return;
         }
         if (valuesMap.size() == capacity) {
-            // 删除使用次数最少的尾部
-            NodeWrapper<Node<Integer, List<LFUNode<K, V>>>> head = frequencyList.getHead();
-            List<LFUNode<K, V>> list = head.getValue().getValue();
-            NodeWrapper<LFUNode<K, V>> remove = list.getTail();
-            list.remove(remove);
-            valuesMap.remove(remove.getValue().getKey());
-            if (list.empty()) {
-                Integer removedFreq = head.getValue().getKey();
-                frequencyList.remove(frequencyMap.get(removedFreq));
-                frequencyMap.remove(removedFreq);
-            }
+            this.evict();
         }
         NodeWrapper<Node<Integer, List<LFUNode<K, V>>>> freqNode = frequencyMap.get(1);
         if (freqNode == null) {
@@ -91,7 +94,6 @@ public class LFU<K, V> {
 
     public void print() {
         for (NodeWrapper<Node<Integer, List<LFUNode<K, V>>>> cur = this.frequencyList.getHead(); cur != null; cur = cur.getNext()) {
-
             System.out.printf("%d: \n", cur.getValue().getKey());
             for (NodeWrapper<LFUNode<K, V>> inner = cur.getValue().getValue().getHead(); inner != null; inner = inner.getNext()) {
                 System.out.printf("=> %s(%s)", inner.getValue().getKey(), inner.getValue().getValue());
