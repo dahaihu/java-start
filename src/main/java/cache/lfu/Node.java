@@ -11,10 +11,10 @@ public class Node<K, V> extends cache.lru.Node<K, V> {
     }
 
     public List<cache.lfu.Node<K, V>> getNodeList() {
-        return this.frequencyNode.getValue();
+        return frequencyNode.getValue();
     }
 
     public Integer getFrequency() {
-        return this.frequencyNode.getKey();
+        return frequencyNode.getKey();
     }
 }
