@@ -25,7 +25,9 @@ public class LFU<K, V> {
     public void moveNext(NodeWrapper<LFUNode<K, V>> node, K key) {
         LFUNode<K, V> realNode = node.getValue();
         List<LFUNode<K, V>> nodeList = realNode.getList();
-        nodeList.remove(node);
+        if (!nodeList.remove(node)) {
+            System.out.println("ERR remove fail");
+        }
         Integer frequency = realNode.getFrequency();
         NodeWrapper<Node<Integer, List<LFUNode<K, V>>>> nextFreqNode = frequencyMap.get(frequency + 1);
         List<LFUNode<K, V>> nextNodeList;
