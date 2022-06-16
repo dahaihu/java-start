@@ -20,7 +20,10 @@ public class LRU<K, V> {
     }
 
     private void updatePosition(NodeWrapper<Node<K, V>> node) {
-        list.remove(node);
+        if (!list.remove(node)) {
+            System.out.println("invlaid");
+            return;
+        }
         list.addFirst(node);
     }
 
